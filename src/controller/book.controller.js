@@ -12,11 +12,11 @@ export const addBook = async (req, res) => {
                 error: `Book with ISBN ${isbn} already exists`
             });
         }
-        // Create or find the publisher
         if (!await Publisher.findByPk(publisher, {transaction: t})) {
             await Publisher.create({publisher_name: publisher}, {transaction: t});
         }
-        // Process the authors
+
+
         const authorRecords = [];
         for (const author of authors) {
             let authorRecord = await Author.findByPk(author.name, {transaction: t});
@@ -75,7 +75,6 @@ export const updateBook = async (req, res) => {
         }
 
         if (publisher) {
-            // Создаем или находим издателя
             let pub = await Publisher.findByPk(publisher, { transaction: t });
             if (!pub) {
                 pub = await Publisher.create({ publisher_name: publisher }, { transaction: t });
@@ -97,7 +96,7 @@ export const updateBook = async (req, res) => {
 
 export const updateBookTitle = async (req, res) => {
     try {
-        const { isbn, title } = req.params; // берем title из URL
+        const { isbn, title } = req.params;
         const book = await Book.findByPk(isbn);
         if (!book) return res.status(404).send({ error: `Book with ISBN ${isbn} not found` });
 
@@ -111,7 +110,7 @@ export const updateBookTitle = async (req, res) => {
 
 export const findBooksByAuthor = async (req, res) => {
     try {
-        const authorName = req.params.author; // совпадает с маршрутом
+        const authorName = req.params.author;
         const author = await Author.findByPk(authorName, { include: 'books' });
         if (!author) return res.status(404).send({ error: `Author ${authorName} not found` });
 
@@ -124,7 +123,7 @@ export const findBooksByAuthor = async (req, res) => {
 
 export const findBooksByPublisher = async (req, res) => {
     try {
-        const publisherName = req.params.publisher; // совпадает с маршрутом
+        const publisherName = req.params.publisher;
         const publisher = await Publisher.findByPk(publisherName, { include: 'books' });
         if (!publisher) return res.status(404).send({ error: `Publisher ${publisherName} not found` });
 
@@ -148,7 +147,7 @@ export const findBookAuthors = async (req, res) => {
 
 export const findPublisherByAuthor = async (req, res) => {
     try {
-        const authorName = req.params.author; // совпадает с маршрутом
+        const authorName = req.params.author;
         const author = await Author.findByPk(authorName, {
             include: { model: Book, as: 'books', include: 'publisherDetails' }
         });
@@ -166,7 +165,7 @@ export const findPublisherByAuthor = async (req, res) => {
 export const removeAuthor = async (req, res) => {
     const t = await sequelize.transaction();
     try {
-        const authorName = req.params.author; // совпадает с маршрутом
+        const authorName = req.params.author;
         const author = await Author.findByPk(authorName, { transaction: t });
         if (!author) {
             await t.rollback();
