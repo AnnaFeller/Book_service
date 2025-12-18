@@ -16,7 +16,7 @@ const Author = sequelize.define('Author', {
     }
 }, {
     tableName: 'authors',
-    timestamps: false //убрать createdAt updatedAt
+    timestamps: false
 })
 
 export default Author;

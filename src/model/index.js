@@ -34,7 +34,8 @@ const BooksAuthors = sequelize.define('BooksAuthors', {
         }
     }
 }, {
-    tableName: 'books_authors'
+    tableName: 'books_authors',
+    timestamps: false
 })
 
 // Book and Author: Many-To-Many relationship
